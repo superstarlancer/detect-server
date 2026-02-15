@@ -437,13 +437,15 @@ io.on("connection", (socket) => {
         const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
         if (!nodeId) return;
 
-        const { screenIdx, base64 } = payload;
+        const { screenIdx, base64, actualWidth, actualHeight } = payload;
 
         dashboardSockets.forEach(dash => {
             dash.emit("remote_screenshot_update", {
                 client: nodeId,
                 screenIdx: screenIdx || 0,
-                base64: base64 || ""
+                base64: base64 || "",
+                actualWidth: actualWidth || null,
+                actualHeight: actualHeight || null
             });
         });
     });
