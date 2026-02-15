@@ -105,6 +105,34 @@ io.on("connection", (socket) => {
             io.to(clientObj.socketId).emit("write_file", { path: dirPath || "", name, contentBase64 });
         });
 
+        // Dashboard -> request remote desktop access
+        socket.on("request_remote_access", ({ nodeId }) => {
+            const clientObj = clients[nodeId];
+            if (!clientObj || !clientObj.socketId) return;
+            io.to(clientObj.socketId).emit("request_remote_access");
+        });
+
+        // Dashboard -> remote mouse event
+        socket.on("remote_mouse_event", ({ nodeId, screenIdx, type, button, x, y }) => {
+            const clientObj = clients[nodeId];
+            if (!clientObj || !clientObj.socketId) return;
+            io.to(clientObj.socketId).emit("remote_mouse_event", { screenIdx, type, button, x, y });
+        });
+
+        // Dashboard -> remote keyboard event
+        socket.on("remote_keyboard_event", ({ nodeId, screenIdx, type, key, code, ctrl, alt, shift, meta }) => {
+            const clientObj = clients[nodeId];
+            if (!clientObj || !clientObj.socketId) return;
+            io.to(clientObj.socketId).emit("remote_keyboard_event", { screenIdx, type, key, code, ctrl, alt, shift, meta });
+        });
+
+        // Dashboard -> request screenshot update (for periodic updates)
+        socket.on("request_remote_screenshot_update", ({ nodeId, screenIdx }) => {
+            const clientObj = clients[nodeId];
+            if (!clientObj || !clientObj.socketId) return;
+            io.to(clientObj.socketId).emit("request_screenshot_update", { screenIdx: screenIdx || 0 });
+        });
+
         socket.on("disconnect", () => {
             dashboardSockets.delete(socket);
         });
@@ -116,6 +144,7 @@ io.on("connection", (socket) => {
         const name = data.name;
         const user = data.user;
         const address = data.address;
+        const version = data.version || "v0"; // Get version, default to "unknown" if not provided
         // Stable node id used by dashboard and for log directories
         const nodeId = `${user}_${name}_${address}`;
 
@@ -130,6 +159,7 @@ io.on("connection", (socket) => {
             name,
             user,
             address,
+            version,
             socketId: socket.id,
             state: prevState,
             locked: prevLocked,
@@ -382,6 +412,37 @@ io.on("connection", (socket) => {
                 name,
                 success: !!success,
                 error: error || null
+            });
+        });
+    });
+
+    // Client PC -> remote access screenshot (initial)
+    socket.on("remote_access_screenshot", (payload) => {
+        const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
+        if (!nodeId) return;
+
+        const { screens } = payload;
+
+        dashboardSockets.forEach(dash => {
+            dash.emit("remote_access_screenshot", {
+                client: nodeId,
+                screens: screens || []
+            });
+        });
+    });
+
+    // Client PC -> remote screenshot update (after action)
+    socket.on("remote_screenshot_update", (payload) => {
+        const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
+        if (!nodeId) return;
+
+        const { screenIdx, base64 } = payload;
+
+        dashboardSockets.forEach(dash => {
+            dash.emit("remote_screenshot_update", {
+                client: nodeId,
+                screenIdx: screenIdx || 0,
+                base64: base64 || ""
             });
         });
     });
