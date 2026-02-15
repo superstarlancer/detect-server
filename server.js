@@ -366,7 +366,7 @@ io.on("connection", (socket) => {
         const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
         if (!nodeId) return;
 
-        const { fileId, chunkIndex, chunkBase64, isLast } = payload;
+        const { fileId, chunkIndex, chunkBase64, isLast, chunkSize } = payload;
 
         dashboardSockets.forEach(dash => {
             dash.emit("file_chunk", {
@@ -374,7 +374,8 @@ io.on("connection", (socket) => {
                 fileId,
                 chunkIndex,
                 chunkBase64,
-                isLast: !!isLast
+                isLast: !!isLast,
+                chunkSize: chunkSize || null
             });
         });
     });
