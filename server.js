@@ -113,10 +113,13 @@ io.on("connection", (socket) => {
         });
 
         // Dashboard -> remote mouse event
-        socket.on("remote_mouse_event", ({ nodeId, screenIdx, type, button, x, y }) => {
+        socket.on("remote_mouse_event", ({ nodeId, screenIdx, type, button, x, y, delta, deltaX }) => {
             const clientObj = clients[nodeId];
             if (!clientObj || !clientObj.socketId) return;
-            io.to(clientObj.socketId).emit("remote_mouse_event", { screenIdx, type, button, x, y });
+            const payload = { screenIdx, type, button, x, y };
+            if (delta !== undefined) payload.delta = delta;
+            if (deltaX !== undefined) payload.deltaX = deltaX;
+            io.to(clientObj.socketId).emit("remote_mouse_event", payload);
         });
 
         // Dashboard -> remote keyboard event
@@ -427,7 +430,9 @@ io.on("connection", (socket) => {
         dashboardSockets.forEach(dash => {
             dash.emit("remote_access_screenshot", {
                 client: nodeId,
-                screens: screens || []
+                screens: screens || [],
+                cursorX: null,
+                cursorY: null
             });
         });
     });
@@ -437,7 +442,7 @@ io.on("connection", (socket) => {
         const nodeId = payload.nodeId || Object.keys(clients).find(key => clients[key].socketId === socket.id);
         if (!nodeId) return;
 
-        const { screenIdx, base64, actualWidth, actualHeight } = payload;
+        const { screenIdx, base64, actualWidth, actualHeight, cursorX, cursorY } = payload;
 
         dashboardSockets.forEach(dash => {
             dash.emit("remote_screenshot_update", {
@@ -445,7 +450,9 @@ io.on("connection", (socket) => {
                 screenIdx: screenIdx || 0,
                 base64: base64 || "",
                 actualWidth: actualWidth || null,
-                actualHeight: actualHeight || null
+                actualHeight: actualHeight || null,
+                cursorX: cursorX !== undefined ? cursorX : -1,
+                cursorY: cursorY !== undefined ? cursorY : -1
             });
         });
     });
